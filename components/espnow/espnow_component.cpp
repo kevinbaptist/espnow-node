@@ -101,7 +101,7 @@ void on_send_report(const uint8_t *mac_addr, esp_now_send_status_t status)
   // Push always because we're the only producer and the pool ensures we never exceed queue size
   if (status == ESP_NOW_SEND_FAIL) {
       if (!isHubChannelFound) {
-          log_i("Failed with channel %d.", channel);
+          ESP_LOGCONFIG(TAG, "Failed with channel %d.", channel);
           // Increase channel. If hub is not online this will search forever!
           // Consider implementing an increasing waiting time to avoid channel congestion
           // whenn all nodes start searching a channel
@@ -124,7 +124,7 @@ void on_send_report(const uint8_t *mac_addr, esp_now_send_status_t status)
       failureCount = 0;
       if (!isHubChannelFound) {
           isHubChannelFound = true;
-          log_i("*** Channel locked at %d ***", channel);
+          ESP_LOGCONFIG(TAG, "*** Channel locked at %d ***", channel);
       }
     }
 }
