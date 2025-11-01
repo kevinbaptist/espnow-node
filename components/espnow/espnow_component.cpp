@@ -28,6 +28,7 @@ static const esp_err_t CONFIG_ESPNOW_WAKE_INTERVAL = 100;
 
 uint8_t channel = 0;
 bool isHubChannelFound = false;
+uint8_t failureCount = 0;
 
 ESPNowComponent *global_esp_now = nullptr;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
@@ -110,7 +111,6 @@ void on_send_report(const uint8_t *mac_addr, esp_now_send_status_t status)
           esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
           esp_wifi_set_promiscuous(false);
       } else {
-          totalFailure++;
           // If the hub channel has been found before but we have failures now
           // we give the hub some time before we start searching the channel again
           // This might avoid all nodes starting the channel search immediatelly
