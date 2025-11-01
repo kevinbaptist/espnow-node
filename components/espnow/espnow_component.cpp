@@ -99,6 +99,34 @@ void on_send_report(const uint8_t *mac_addr, esp_now_send_status_t status)
   // Push the packet to the queue
   global_esp_now->receive_packet_queue_.push(packet);
   // Push always because we're the only producer and the pool ensures we never exceed queue size
+  if (status == ESP_NOW_SEND_FAIL) {
+      if (!isHubChannelFound) {
+          log_i("Failed with channel %d.", channel);
+          // Increase channel. If hub is not online this will search forever!
+          // Consider implementing an increasing waiting time to avoid channel congestion
+          // whenn all nodes start searching a channel
+          channel = (channel + 1) % 13;
+          esp_wifi_set_promiscuous(true);
+          esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
+          esp_wifi_set_promiscuous(false);
+      } else {
+          totalFailure++;
+          // If the hub channel has been found before but we have failures now
+          // we give the hub some time before we start searching the channel again
+          // This might avoid all nodes starting the channel search immediatelly
+          failureCount++;
+          if (failureCount > 10) {
+              isHubChannelFound = false;
+          }
+      }
+
+    } else {
+      failureCount = 0;
+      if (!isHubChannelFound) {
+          isHubChannelFound = true;
+          log_i("*** Channel locked at %d ***", channel);
+      }
+    }
 }
 
 void on_data_received(const esp_now_recv_info_t *info, const uint8_t *data, int size) {
