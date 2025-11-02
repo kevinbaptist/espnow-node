@@ -11,7 +11,7 @@
 #include <esp_mac.h>
 #include <esp_now.h>
 #include <esp_random.h>
-#include <WiFi.h>
+//#include <WiFi.h>
 #include <esp_wifi.h>
 #include <cstring>
 #include <memory>
@@ -211,7 +211,7 @@ void ESPNowComponent::enable_() {
   }
   this->get_wifi_channel();
 
-   WiFi.mode(WIFI_AP_STA);
+   // WiFi.mode(WIFI_AP_STA);
   // Ensure WiFi is set to 802.11b (needed for LR mode)
   esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_LR);
   esp_wifi_set_protocol(WIFI_IF_AP, WIFI_PROTOCOL_LR);
