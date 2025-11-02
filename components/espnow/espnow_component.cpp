@@ -210,6 +210,11 @@ void ESPNowComponent::enable_() {
   }
   this->get_wifi_channel();
 
+   WiFi.mode(WIFI_AP_STA);
+  // Ensure WiFi is set to 802.11b (needed for LR mode)
+  esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_LR);
+  esp_wifi_set_protocol(WIFI_IF_AP, WIFI_PROTOCOL_LR);
+
   esp_err_t err = esp_now_init();
   if (err != ESP_OK) {
     ESP_LOGE(TAG, "esp_now_init failed: %s", esp_err_to_name(err));
